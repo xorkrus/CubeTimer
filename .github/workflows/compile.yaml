@@ -51,10 +51,16 @@ jobs:
         
         # Копируем свежую прошивку
         cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
+
+        echo "build/" >> .gitignore
+        git add .gitignore
         
-        # Коммитим и пушим изменения
-        git add firmware/latest.uf2
-        git commit -m "Automatic firmware update [skip ci]"
-        
-        # Используем PAT для push
-        git push https://xorkrus:${{ secrets.DEPLOY_TOKEN }}@github.com/xorkrus/CubeTimer.git HEAD:main
+        # Проверим, скопировался ли файл
+        if [ -f "firmware/latest.uf2" ]; then
+          git add firmware/latest.uf2
+          git commit -m "Automatic firmware update [skip ci]"
+          git push https://xorkrus:${{ secrets.DEPLOY_TOKEN }}@github.com/xorkrus/CubeTimer.git HEAD:main
+        else
+          echo "Ошибка: файл firmware/latest.uf2 не найден!"
+          exit 1
+        fi
