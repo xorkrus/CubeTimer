@@ -45,7 +45,7 @@ void setup() {
 
   Serial.println(F("Benchmark                Time (microseconds)"));
   delay(10);
-  Serial.print(F("Screen fill              "));
+  Serial.print(F("Screenchik fill              "));
   Serial.println(testFillScreen());
   delay(500);
 
