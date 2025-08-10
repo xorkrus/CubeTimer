@@ -31,7 +31,7 @@ jobs:
     # Шаг 4: Компилируем скетч
     - name: Compile sketch
       run: |
-        arduino-cli compile --fqbn arduino:mbed_rp2040:pico --build-path ./build CubeTimer/
+        arduino-cli compile --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
 
     # Шаг 5: Пушим UF2 файл в репозиторий
     - name: Push firmware to repo
