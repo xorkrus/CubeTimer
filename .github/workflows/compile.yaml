@@ -35,7 +35,7 @@ jobs:
 
     #Поиск файла
     - name: List build files
-      run: find /home/runner/work/CubeTimer -name "*.uf2" -type f -printf "Found UF2: %p\n" || echo "No UF2 files found"
+      run: find /home/runner/work/CubeTimer -name "*.uf2" -type f
     
     # Шаг 5: Пушим UF2 файл в репозиторий
     - name: Push firmware to repo
