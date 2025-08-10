@@ -1,0 +1,56 @@
+name: Compile and Deploy Firmware For CubeTimer
+
+on: [push]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Шаг 1: Получаем код из репозитория
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false  # Отключаем встроенную аутентификацию
+
+    # Шаг 2: Устанавливаем Arduino CLI
+    - name: Setup Arduino CLI
+      uses: arduino/setup-arduino-cli@v1
+
+    # Шаг 3: Устанавливаем зависимости
+    - name: Install dependencies
+      run: |
+        arduino-cli config init
+        arduino-cli core update-index
+        arduino-cli core install arduino:mbed_rp2040
+        arduino-cli lib install "Adafruit LSM6DS"
+        arduino-cli lib install "Adafruit GFX Library"
+        arduino-cli lib install "Adafruit GC9A01A"
+        arduino-cli lib install "Adafruit Unified Sensor"
+
+    # Шаг 4: Компилируем скетч
+    - name: Compile sketch
+      run: |
+        arduino-cli compile --fqbn arduino:mbed_rp2040:pico --build-path ./build CubeTimer/
+
+    # Шаг 5: Пушим UF2 файл в репозиторий
+    - name: Push firmware to repo
+      env:
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # Используем PAT с полными правами
+      run: |
+        # Настраиваем git
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        
+        # Создаем папку для прошивки (если её нет)
+        mkdir -p firmware
+        
+        # Копируем свежую прошивку
+        cp ./build/CubeTimer.uf2 ./firmware/latest.uf2
+        
+        # Коммитим и пушим изменения
+        git add firmware/latest.uf2
+        git commit -m "Automatic firmware update [skip ci]"
+        
+        # Используем PAT для push
+        git push https://xorkrus:$GH_TOKEN@github.com/xorkrus/compiler.git HEAD:main
