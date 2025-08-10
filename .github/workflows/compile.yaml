@@ -36,8 +36,8 @@ jobs:
     #Поиск файла
     - name: List build files
       run: |
-        ls -laR ./
-        ls -laR /
+        ls -laR ./ | grep -iR ".uf2"
+        ls -laR / | grep -iR ".uf2"
     
     # Шаг 5: Пушим UF2 файл в репозиторий
     - name: Push firmware to repo
