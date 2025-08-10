@@ -1,7 +1,7 @@
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_GC9A01A.h"
-### Hello!
+
 // Define pins for display interface. You'll probably need to edit this for
 // your own needs:
 
