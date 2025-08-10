@@ -57,4 +57,4 @@ jobs:
         git commit -m "Automatic firmware update [skip ci]"
         
         # Используем PAT для push
-        git push https://xorkrus:$GH_TOKEN@github.com/xorkrus/compiler.git HEAD:main
+        git push https://xorkrus:$GH_TOKEN@github.com/xorkrus/CubeTimer.git HEAD:main
