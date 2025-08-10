@@ -33,6 +33,12 @@ jobs:
       run: |
         arduino-cli compile --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
 
+    #Поиск файла
+    - name: List build files
+      run: |
+        ls -laR ./
+        ls -laR /
+    
     # Шаг 5: Пушим UF2 файл в репозиторий
     - name: Push firmware to repo
       env:
