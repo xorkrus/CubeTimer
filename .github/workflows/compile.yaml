@@ -50,7 +50,7 @@ jobs:
         mkdir -p firmware
         
         # Копируем свежую прошивку
-        cp ./build/CubeTimer.uf2 ./firmware/latest.uf2
+        cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
         
         # Коммитим и пушим изменения
         git add firmware/latest.uf2
