@@ -1,11 +1,13 @@
 #include <Wire.h>
 #include <Adafruit_LSM6DS3.h>
 #include <TB_TFT_eSPI.h>
+#include "T3X5_54pt7b.h"
 
 Adafruit_LSM6DS3 lsm6ds3;
 TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
+  tft.setFreeFont(&T3X5_54pt7b);
   // Инициализация I2C
   Wire.setSDA(0);
   Wire.setSCL(1);
@@ -20,8 +22,8 @@ void setup() {
   tft.init();
   tft.setRotation(0);
   tft.fillScreen(TFT_BLACK);
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.setTextFont(2);
+  tft.setTextColor(TFT_WHITE);
+  // tft.setTextFont(2);
   tft.setTextDatum(MC_DATUM);
 }
 
