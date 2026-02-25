@@ -38,7 +38,9 @@ jobs:
     - name: Compile sketch
       run: arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
       # Резервная копия сразу после компиляции
+    - name: Backup
       run: cp ./build/CubeTimer.ino.elf ./build/CubeTimer.ino.elf.backup
+    - name: Check
       run: ls -la ./build/CubeTimer.ino.elf.backup
     - name: TEST
       run: |
