@@ -1,6 +1,8 @@
 name: Compile and Deploy Firmware For CubeTimer
 
-on: [push]
+# on: [push] # запуск по пушу
+on:
+  workflow_dispatch:        # разрешает ручной запуск
 
 jobs:
   compile:
