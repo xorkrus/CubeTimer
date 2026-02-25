@@ -33,7 +33,7 @@ jobs:
     # Шаг 4: Компилируем скетч
     - name: Compile sketch
       run: |
-        arduino-cli compile --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
+        arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
 
     #Поиск файла
     - name: List build files
