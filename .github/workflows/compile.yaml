@@ -30,15 +30,31 @@ jobs:
         arduino-cli lib install "Adafruit GC9A01A"
         arduino-cli lib install "Adafruit Unified Sensor"
 
+    # Шаг 4.-1: очистка
+    - name: Clean old UF2 files
+      run: rm -f /home/runner/work/CubeTimer/CubeTimer/build/*.uf2
+  
     # Шаг 4: Компилируем скетч
     - name: Compile sketch
       run: |
         arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
 
-    #Поиск файла
-    - name: List build files
-      run: find /home/runner/work/CubeTimer -name "*.uf2" -type f
-    
+    # Шаг 4.1: отладка
+    - name: Debug build artifacts
+      run: |
+        echo "=== Содержимое build/ ==="
+        ls -la /home/runner/work/CubeTimer/CubeTimer/build/
+        echo "=== Размер .elf файла ==="
+        du -h /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
+        echo "=== Проверка .elf файла ==="
+        file /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
+        echo "=== Попытка повторного запуска elf2uf2 ==="
+        /home/runner/.arduino15/packages/arduino/tools/rp2040tools/1.0.6/elf2uf2 /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf /home/runner/work/CubeTimer/CubeTimer/build/test.uf2
+        ls -la /home/runner/work/CubeTimer/CubeTimer/build/test.uf2
+        #Поиск файла
+        - name: List build files
+          run: find /home/runner/work/CubeTimer -name "*.uf2" -type f
+        
     # Шаг 5: Пушим UF2 файл в репозиторий
     - name: Push firmware to repo
       env:
