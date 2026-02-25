@@ -36,9 +36,12 @@ jobs:
   
     # Шаг 4: Компилируем скетч
     - name: Compile sketch
+      run: arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
+    - name: TEST
       run: |
-        arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
-
+        echo "====TEST===="
+        ls -lha /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
+        echo "====TEST===="
     # Шаг 4.1: отладка
     - name: Debug build artifacts
       run: |
