@@ -52,7 +52,11 @@ jobs:
         mkdir -p firmware
         
         # Копируем свежую прошивку
+        file /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
+        ls -lha /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
         cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
+        file ./firmware/latest.uf2
+        ls -lha ./firmware/latest.uf2
 
         echo "build/" >> .gitignore
         git add .gitignore
