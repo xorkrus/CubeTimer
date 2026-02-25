@@ -31,8 +31,8 @@ jobs:
         arduino-cli lib install "Adafruit Unified Sensor"
 
     # Шаг 4.-1: очистка
-    - name: Clean old UF2 files
-      run: rm -f /home/runner/work/CubeTimer/CubeTimer/build/*.uf2
+    - name: Clean old files
+      run: rm -f /home/runner/work/CubeTimer/CubeTimer/build/*
   
     # Шаг 4: Компилируем скетч
     - name: Compile sketch
@@ -44,10 +44,6 @@ jobs:
       run: |
         echo "=== Содержимое build/ ==="
         ls -la /home/runner/work/CubeTimer/CubeTimer/build/
-        echo "=== Размер .elf файла ==="
-        du -h /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
-        echo "=== Проверка .elf файла ==="
-        file /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
         echo "=== Попытка повторного запуска elf2uf2 ==="
         /home/runner/.arduino15/packages/arduino/tools/rp2040tools/1.0.6/elf2uf2 /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf /home/runner/work/CubeTimer/CubeTimer/build/test.uf2
         ls -la /home/runner/work/CubeTimer/CubeTimer/build/test.uf2
