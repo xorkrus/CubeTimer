@@ -36,30 +36,8 @@ jobs:
   
     # Шаг 4: Компилируем скетч
     - name: Compile sketch
-      run: arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./build --build-path ./build CubeTimer/
+      run: arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./out --build-path ./build CubeTimer/
       # Резервная копия сразу после компиляции
-    - name: Backup
-      run: cp ./build/CubeTimer.ino.elf ./build/CubeTimer.ino.elf.backup
-    - name: Check
-      run: ls -la ./build/CubeTimer.ino.elf.backup
-    - name: TEST
-      run: |
-        echo "====TEST===="
-        ls -lha /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
-        /home/runner/.arduino15/packages/arduino/tools/arm-none-eabi-gcc/7-2017q4/bin/arm-none-eabi-size -A /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf
-        echo "====TEST===="
-    # Шаг 4.1: отладка
-    - name: Debug build artifacts
-      run: |
-        echo "=== Содержимое build/ ==="
-        ls -la /home/runner/work/CubeTimer/CubeTimer/build/
-        echo "=== Попытка повторного запуска elf2uf2 ==="
-        /home/runner/.arduino15/packages/arduino/tools/rp2040tools/1.0.6/elf2uf2 /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.elf /home/runner/work/CubeTimer/CubeTimer/build/test.uf2
-        ls -la /home/runner/work/CubeTimer/CubeTimer/build/test.uf2
-        #Поиск файла
-        - name: List build files
-          run: find /home/runner/work/CubeTimer -name "*.uf2" -type f
-        
     # Шаг 5: Пушим UF2 файл в репозиторий
     - name: Push firmware to repo
       env:
