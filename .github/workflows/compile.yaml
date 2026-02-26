@@ -1,71 +1,67 @@
 name: Compile and Deploy Firmware For CubeTimer
 
-# on: [push] # запуск по пушу
 on:
-  workflow_dispatch:        # разрешает ручной запуск
+  workflow_dispatch:  # ручной запуск
 
 jobs:
   compile:
     runs-on: ubuntu-latest
-    
+
     steps:
-    # Шаг 1: Получаем код из репозитория
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false  # Отключаем встроенную аутентификацию
+      # 1. Получаем код из репозитория
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-    # Шаг 2: Устанавливаем Arduino CLI
-    - name: Setup Arduino CLI
-      uses: arduino/setup-arduino-cli@v1
+      # 2. Устанавливаем Arduino CLI
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
 
-    # Шаг 3: Устанавливаем зависимости
-    - name: Install dependencies
-      run: |
-        arduino-cli config init
-        arduino-cli core update-index
-        arduino-cli core install arduino:mbed_rp2040
-        arduino-cli lib install "Adafruit LSM6DS"
-        arduino-cli lib install "Adafruit GFX Library"
-        arduino-cli lib install "Adafruit GC9A01A"
-        arduino-cli lib install "Adafruit Unified Sensor"
+      # 3. Настраиваем URL для сторонних ядер и устанавливаем ядро Earle Philhower RP2040
+      - name: Install RP2040 core (Earle Philhower)
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+          arduino-cli core update-index
+          arduino-cli core install rp2040:rp2040
 
-    # Шаг 4.-1: очистка
-    - name: Clean old files
-      run: rm -f /home/runner/work/CubeTimer/CubeTimer/build/*
-  
-    # Шаг 4: Компилируем скетч
-    - name: Compile sketch
-      run: arduino-cli compile --verbose --fqbn arduino:mbed_rp2040:pico --output-dir ./out --build-path ./build CubeTimer/
-      # Резервная копия сразу после компиляции
-    # Шаг 5: Пушим UF2 файл в репозиторий
-    - name: Push firmware to repo
-      env:
-        GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # Используем PAT с полными правами
-      run: |
-        # Настраиваем git
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        
-        # Создаем папку для прошивки (если её нет)
-        mkdir -p firmware
-        
-        # Копируем свежую прошивку
-        file /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
-        ls -lha /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
-        cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
-        file ./firmware/latest.uf2
-        ls -lha ./firmware/latest.uf2
+      # 4. Устанавливаем необходимые библиотеки
+      - name: Install libraries
+        run: |
+          arduino-cli lib install "Adafruit LSM6DS"
+          arduino-cli lib install "Adafruit GFX Library"
+          arduino-cli lib install "Adafruit GC9A01A"      # драйвер дисплея
+          arduino-cli lib install "Adafruit NeoPixel"     # светодиоды (если используются)
+          arduino-cli lib install "Adafruit Unified Sensor"
+          arduino-cli lib install "TFT_eSPI"              # альтернативный драйвер GC9A01A (если нужен)
 
-        echo "build/" >> .gitignore
-        git add .gitignore
-        
-        # Проверим, скопировался ли файл
-        if [ -f "firmware/latest.uf2" ]; then
-          git add firmware/latest.uf2
-          git commit -m "Automatic firmware update [skip ci]"
-          git push https://xorkrus:${{ secrets.DEPLOY_TOKEN }}@github.com/xorkrus/CubeTimer.git HEAD:main
-        else
-          echo "Ошибка: файл firmware/latest.uf2 не найден!"
-          exit 1
-        fi
+      # 5. Очистка предыдущей сборки
+      - name: Clean old files
+        run: rm -f /home/runner/work/CubeTimer/CubeTimer/build/*
+
+      # 6. Компиляция скетча с передачей параметров пинов для TFT_eSPI
+      - name: Compile sketch
+        run: |
+          arduino-cli compile --verbose \
+            --fqbn rp2040:rp2040:pico \
+            --output-dir ./out \
+            --build-path ./build \
+            --build-property "build.extra_flags=-DGC9A01_DRIVER -DTFT_CS=17 -DTFT_DC=20 -DTFT_RST=21 -DTFT_MOSI=19 -DTFT_SCLK=18 -DSPI_FREQUENCY=40000000" \
+            CubeTimer/
+
+      # 7. Пушим скомпилированный UF2 в репозиторий
+      - name: Push firmware to repo
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          mkdir -p firmware
+          cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
+
+          echo "build/" >> .gitignore
+          git add .gitignore firmware/latest.uf2
+          git commit -m "Automatic firmware update [skip ci]" || echo "No changes to commit"
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
