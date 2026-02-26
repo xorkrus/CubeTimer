@@ -41,6 +41,7 @@ jobs:
         run: |
           rm -f /home/runner/work/CubeTimer/CubeTimer/build/*
           rm -f ./firmware/latest.uf2
+          ls -lha ./firmware/latest.uf2
 
       # 6. Компиляция скетча с передачей параметров пинов для TFT_eSPI
       - name: Compile sketch
@@ -61,6 +62,8 @@ jobs:
           git config --global user.email "actions@github.com"
 
           mkdir -p firmware
+          rm -f /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
+          rm -f ./firmware/latest.uf2
           cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
           ls -lha /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
           ls -lha ./firmware/latest.uf2
