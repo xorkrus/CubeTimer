@@ -60,6 +60,8 @@ jobs:
 
           mkdir -p firmware
           cp /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 ./firmware/latest.uf2
+          ls -lha /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2
+          ls -lha ./firmware/latest.uf2
 
           echo "build/" >> .gitignore
           git add .gitignore firmware/latest.uf2
