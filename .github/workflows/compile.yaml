@@ -26,6 +26,10 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install rp2040:rp2040
 
+      # 3.1 List
+      - name: List
+        run: arduino-cli board listall | grep pico
+
       # 4. Устанавливаем необходимые библиотеки
       - name: Install libraries
         run: |
