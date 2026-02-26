@@ -54,7 +54,7 @@ jobs:
       # 7. Пушим скомпилированный UF2 в репозиторий
       - name: Push firmware to repo
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
