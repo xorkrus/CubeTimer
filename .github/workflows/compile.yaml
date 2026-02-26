@@ -26,10 +26,6 @@ jobs:
           arduino-cli core update-index
           arduino-cli core install rp2040:rp2040
 
-      # 3.1 List
-      - name: List
-        run: arduino-cli board listall | grep pico
-
       # 4. Устанавливаем необходимые библиотеки
       - name: Install libraries
         run: |
@@ -48,7 +44,7 @@ jobs:
       - name: Compile sketch
         run: |
           arduino-cli compile --verbose \
-            --fqbn rp2040:rp2040:pico \
+            --fqbn rp2040:rp2040:rpipico \
             --output-dir ./out \
             --build-path ./build \
             --build-property "build.extra_flags=-DGC9A01_DRIVER -DTFT_CS=17 -DTFT_DC=20 -DTFT_RST=21 -DTFT_MOSI=19 -DTFT_SCLK=18 -DSPI_FREQUENCY=40000000" \
