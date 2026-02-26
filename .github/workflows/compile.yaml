@@ -63,5 +63,5 @@ jobs:
 
           echo "build/" >> .gitignore
           git add .gitignore firmware/latest.uf2
-          git commit -m "Automatic firmware update [skip ci]" || echo "No changes to commit"
-          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
+          #git commit -m "Automatic firmware update [skip ci]" || echo "No changes to commit"
+          #git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
