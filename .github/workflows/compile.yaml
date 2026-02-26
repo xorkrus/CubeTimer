@@ -58,12 +58,9 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          ls -lha /home/runner/work/CubeTimer/CubeTimer/build/
+          # ls -lha /home/runner/work/CubeTimer/CubeTimer/build/
           mkdir -p firmware
           mv /home/runner/work/CubeTimer/CubeTimer/build/CubeTimer.ino.uf2 firmware/latest.uf2
-
-
+          ls -lha firmware/*
+          pwd
           echo "build/" >> .gitignore
-          git add .gitignore firmware/latest.uf2
-          #git commit -m "Automatic firmware update [skip ci]" || echo "No changes to commit"
-          #git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
