@@ -38,7 +38,9 @@ jobs:
 
       # 5. Очистка предыдущей сборки
       - name: Clean old files
-        run: rm -f /home/runner/work/CubeTimer/CubeTimer/build/*
+        run: |
+          rm -f /home/runner/work/CubeTimer/CubeTimer/build/*
+          rm -f ./firmware/latest.uf2
 
       # 6. Компиляция скетча с передачей параметров пинов для TFT_eSPI
       - name: Compile sketch
